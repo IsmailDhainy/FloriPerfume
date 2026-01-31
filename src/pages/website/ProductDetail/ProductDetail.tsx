@@ -295,7 +295,7 @@ const ProductDetailPage = () => {
                                 e,
                                 productData,
                                 productProperty,
-                                "increment",
+                                "decrement",
                               );
                             }}
                           >
