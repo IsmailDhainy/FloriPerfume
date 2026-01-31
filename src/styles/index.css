@@ -1,0 +1,106 @@
+/* ------------------------- */
+/* Tailwind MUST come first  */
+/* ------------------------- */
+/* stylelint-disable at-rule-no-unknown */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+/* stylelint-enable at-rule-no-unknown */
+
+/* Global variables moved to `src/styles/vars.css` and imported last so
+   they override legacy :root values defined in `styles/css/styles.css`.
+   This file now contains Tailwind directives and miscellaneous utilities only.
+*/
+
+/* ------------------------- */
+/* Scrollbar Styles (Chrome) */
+/* ------------------------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background-color: #e7ece7;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c2c2c2;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(107, 139, 255, 0.8);
+}
+
+/* thin scrollbar utility */
+.thin_scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+/* ------------------------- */
+/* Layout Fixes              */
+/* ------------------------- */
+html {
+  min-height: 100%;
+  font-family: "Poppins", sans-serif;
+  scrollbar-gutter: stable;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ------------------------- */
+/* Animations                */
+/* ------------------------- */
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-out-right {
+  animation: slideOutRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* blinking cursor */
+@keyframes blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.animate-blink {
+  animation: blink 1s infinite;
+}
