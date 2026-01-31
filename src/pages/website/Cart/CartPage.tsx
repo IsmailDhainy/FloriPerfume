@@ -273,9 +273,15 @@ const CartPage = () => {
                           key={`${index}-cart-page-a`}
                         >
                           <img
-                            src="images/accessories-cls.jpg"
+                            src={
+                              each?.image &&
+                              each?.image.length > 0 &&
+                              each.image[0]
+                                ? each.image[0]
+                                : "/images/Product.jpg"
+                            }
                             alt="product"
-                            key={`${index}-cart-page-img`}
+                            key={`${index}-cart-page-img-mobile`}
                           />
                         </a>
                       </div>
@@ -356,6 +362,16 @@ const CartPage = () => {
                               className="flex-1 text-[20px]"
                               key={`${index}-cart2-page-div-div33`}
                             >
+                              <span className="old-price-cart">
+                                {currency?.symbol ?? "$"}
+                                {eachSize &&
+                                  eachSize?.quantity &&
+                                  (
+                                    eachSize.price *
+                                    eachSize.quantity *
+                                    (currency?.rate ?? 1)
+                                  ).toFixed(2)}
+                              </span>
                               {currency?.symbol ?? "$"}
                               {each.sale
                                 ? eachSize &&
