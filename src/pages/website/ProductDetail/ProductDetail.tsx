@@ -224,7 +224,9 @@ const ProductDetailPage = () => {
                   <div className="tf-product-info-list other-image-zoom">
                     <div className="tf-product-info-heading">
                       <div className="tf-product-info-name">
-                        <div className="text text-btn-uppercase">Clothing</div>
+                        <div className="text text-btn-uppercase">
+                          {productData?.category?.name}
+                        </div>
                         <h3 className="name">{productData?.name}</h3>
                       </div>
                       <div className="tf-product-info-desc">
