@@ -254,10 +254,12 @@ const ProductCardGrid = ({ product, index }) => {
           {product.name}
         </a>
         <div className="price">
-          <span className="old-price">
-            {currency?.symbol ?? "$"}
-            {(product.price * (currency?.rate ?? 1)).toFixed(2)}
-          </span>{" "}
+          {product.sale && product.sale > 0 ? (
+            <span className="old-price">
+              {currency?.symbol ?? "$"}
+              {(product.price * (currency?.rate ?? 1)).toFixed(2)}
+            </span>
+          ) : null}
           <span className="current-price">
             {" "}
             {currency?.symbol ?? "$"}{" "}

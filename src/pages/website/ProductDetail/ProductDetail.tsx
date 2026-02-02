@@ -549,10 +549,18 @@ const ProductDetailPage = () => {
                               {product.name}
                             </a>
                             <span className="price">
-                              <span className="old-price">
-                                ${product.price}
-                              </span>{" "}
-                              ${product.netPrice}
+                              {product.price !== product.netPrice && (
+                                <span className="old-price">
+                                  {currency?.symbol ?? "$"}
+                                  {(
+                                    product.price * (currency?.rate ?? 1)
+                                  ).toFixed(2)}
+                                </span>
+                              )}
+                              {currency?.symbol ?? "$"}
+                              {(
+                                product.netPrice * (currency?.rate ?? 1)
+                              ).toFixed(2)}
                             </span>
                           </div>
                         </div>

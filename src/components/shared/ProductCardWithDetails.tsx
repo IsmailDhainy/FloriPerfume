@@ -152,11 +152,13 @@ const ProductCardWithDetails = ({ product, index }) => {
           {product.name}
         </a>
         <div className="price" key={`product-div22-${index}-${product.id}`}>
-          <span className="old-price">
-            {" "}
-            {currency?.symbol ?? "$"}
-            {(selectedPrice * (currency?.rate ?? 1)).toFixed(2)}
-          </span>{" "}
+          {selectedPrice.sale && selectedPrice.sale > 0 ? (
+            <span className="old-price">
+              {" "}
+              {currency?.symbol ?? "$"}
+              {(selectedPrice * (currency?.rate ?? 1)).toFixed(2)}
+            </span>
+          ) : null}
           <span className="current-price">
             {currency?.symbol ?? "$"}
             {(

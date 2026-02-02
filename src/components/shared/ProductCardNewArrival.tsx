@@ -277,13 +277,15 @@ const ProductCardNewArrival = ({ product, index }) => {
           className="price"
           key={`${index}-product-card-new-arrival-div-span-div`}
         >
-          <span
-            className="old-price"
-            key={`${index}-product-card-new-arrival-div-span-span`}
-          >
-            {currency?.symbol ?? "$"}
-            {(product.price * (currency?.rate ?? 1)).toFixed(2)}
-          </span>{" "}
+          {product.sale && product.sale > 0 ? (
+            <span
+              className="old-price"
+              key={`${index}-product-card-new-arrival-div-span-span`}
+            >
+              {currency?.symbol ?? "$"}
+              {(product.price * (currency?.rate ?? 1)).toFixed(2)}
+            </span>
+          ) : null}
           {currency?.symbol ?? "$"}
           {(product.netPrice * (currency?.rate ?? 1)).toFixed(2)}
         </span>
