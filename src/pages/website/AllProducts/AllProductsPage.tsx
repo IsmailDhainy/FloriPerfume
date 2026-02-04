@@ -126,6 +126,21 @@ const AllProductsPage = () => {
     return <Loader />;
   }
 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (window.jQuery && window.shopFunctions) {
+        window.shopFunctions.init();
+      }
+    }, 50);
+
+    return () => {
+      clearTimeout(timer);
+      if (window.shopFunctions) {
+        window.shopFunctions.cleanup();
+      }
+    };
+  }, [productsResponse, currency]);
+
   const products = productsResponse?.data || [];
   const total = productsResponse?.count || 0;
   const totalPages = Math.ceil(total / limit);
