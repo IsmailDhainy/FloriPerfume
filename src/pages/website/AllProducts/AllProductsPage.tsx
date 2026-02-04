@@ -12,6 +12,7 @@ import CheckoutModal from "$/components/shared/CheckoutModal";
 import Loader from "$/components/shared/Loader";
 import ProductCardGrid from "$/components/shared/ProductCardGrid";
 import ProductCardWithDetails from "$/components/shared/ProductCardWithDetails";
+import useCurrency from "$/hooks/contexts/useCurrency";
 import useSettings from "$/hooks/contexts/useSettings";
 import PATHS from "$/routes/constants";
 
@@ -29,6 +30,7 @@ const AllProductsPage = () => {
   const location = useLocation();
   const { settings } = useSettings();
   const navigate = useNavigate();
+  const { currency } = useCurrency();
 
   const initialCategoryId = location.state?.categoryId;
 
@@ -444,7 +446,13 @@ const AllProductsPage = () => {
                 id="price-value-range"
                 data-min="0"
                 data-max={
-                  productsHigestPrice ? String(productsHigestPrice) : "700"
+                  productsHigestPrice
+                    ? String(
+                        (productsHigestPrice * (currency?.rate ?? 1)).toFixed(
+                          2,
+                        ),
+                      )
+                    : "700"
                 }
               ></div>
               <div className="box-price-product">
@@ -453,7 +461,7 @@ const AllProductsPage = () => {
                   <div
                     className="price-val"
                     id="price-min-value"
-                    data-currency="$"
+                    data-currency={currency?.symbol ?? "$"}
                   ></div>
                 </div>
                 <div className="box-price-item">
@@ -461,7 +469,7 @@ const AllProductsPage = () => {
                   <div
                     className="price-val"
                     id="price-max-value"
-                    data-currency="$"
+                    data-currency={currency?.symbol ?? "$"}
                   ></div>
                 </div>
               </div>
