@@ -185,7 +185,7 @@ const ProductCardWithDetails = ({ product, index }) => {
           <div className="size-box list-product-btn">
             {product.size.map((sizeItem, sizeIndex) => (
               <span
-                className={`text-main flex h-[70px] w-[70px] items-center justify-center rounded-full border hover:cursor-pointer ${sizeIndex === selectedSizeIndex && "border-2 border-black"} border-[#e9e9e9] bg-white`}
+                className={`text-main flex h-[48px] w-[120px] items-center justify-center border hover:cursor-pointer ${sizeIndex === selectedSizeIndex && "border-2 border-black"} border-[#e9e9e9] bg-white`}
                 key={`size-${sizeIndex}-${sizeItem.property}`}
                 onClick={() => (
                   setSelectedSizeIndex(sizeIndex),

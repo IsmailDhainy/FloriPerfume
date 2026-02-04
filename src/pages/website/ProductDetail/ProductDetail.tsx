@@ -1,11 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { getAllProductsByType, getOne } from "$/api/products/product.api";
+import { createWhislist, remove } from "$/api/whishlist/whishlist.api";
 import Loader from "$/components/shared/Loader";
+import ProductCardBestSeller from "$/components/shared/ProductCardBestSeller";
+import useAuth from "$/hooks/contexts/useAuth";
 import useCurrency from "$/hooks/contexts/useCurrency";
 import useSettings from "$/hooks/contexts/useSettings";
 import PATHS from "$/routes/constants";
@@ -14,20 +17,19 @@ import {
   ProductTableType,
   useCartStore,
 } from "$/store/CartStore";
+import { Product, useWhishlistStore } from "$/store/WhislistStore";
 
 const ProductDetailPage = () => {
   const { id } = useParams<{ id: string }>();
   const { currency } = useCurrency();
   const { settings } = useSettings();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   const items = useCartStore((state) => state.items);
   const updateItem = useCartStore((state) => state.updateItem);
   const removeSizeItem = useCartStore((state) => state.removeSizeItem);
-
-  const [price, setPrice] = useState<number>(0);
-  const [productProperty, setProductProperty] = useState<ProductSize2>();
-  const [quantity, setQuantity] = useState<number>(0);
 
   const { data: productData, isPending } = useQuery({
     queryKey: ["get-one-product", id],
@@ -35,6 +37,17 @@ const ProductDetailPage = () => {
     enabled: !!id,
     refetchOnMount: true,
   });
+
+  const isInWishlist = useWhishlistStore((state) =>
+    state.isInWishlist(productData?.id ?? 0),
+  );
+
+  const addProduct = useWhishlistStore((state) => state.addProduct);
+  const removeProduct = useWhishlistStore((state) => state.removeProduct);
+
+  const [price, setPrice] = useState<number>(0);
+  const [productProperty, setProductProperty] = useState<ProductSize2>();
+  const [quantity, setQuantity] = useState<number>(0);
 
   const { data: productsResponse } = useQuery({
     queryKey: ["get-products-by-type", productData],
@@ -48,6 +61,41 @@ const ProductDetailPage = () => {
       ),
     placeholderData: (previousData) => previousData,
     refetchOnMount: true,
+  });
+
+  const { mutate: addToWishlistAPI } = useMutation({
+    mutationFn: () => {
+      if (!productData || !user?.id) {
+        throw new Error("Product or user not available");
+      }
+      return createWhislist({ productId: productData.id, userId: user.id });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["get-whislist-by-userId", user?.id],
+      });
+    },
+    onError: () => {
+      toast.error("Failed to add to wishlist");
+    },
+  });
+
+  // Remove from wishlist mutation
+  const { mutate: removeFromWishlistAPI } = useMutation({
+    mutationFn: () => {
+      if (!productData || !user?.id) {
+        throw new Error("Product or user not available");
+      }
+      return remove(productData.id, user.id);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["get-whislist-by-userId", user?.id],
+      });
+    },
+    onError: () => {
+      toast.error("Failed to remove from wishlist");
+    },
   });
 
   const handleUpdateItem = (
@@ -82,6 +130,41 @@ const ProductDetailPage = () => {
   const handlePriceAndProperty = (each: ProductSize2) => {
     setPrice(each.price);
     setProductProperty(each);
+  };
+
+  const handleWhishlist = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Add null check
+    if (!productData) {
+      toast.error("Product not available");
+      return;
+    }
+
+    if (isInWishlist) {
+      removeProduct(productData.id);
+      if (user?.id) {
+        removeFromWishlistAPI();
+      }
+      toast.success("Removed from wishlist");
+    } else {
+      const wishlistProduct: Product = {
+        id: productData.id,
+        name: productData.name,
+        image: productData.image,
+        sale: productData.sale,
+        price: productData.price,
+        netPrice: productData.netPrice,
+        onSale: productData.onSale,
+        size: productData.size[0] || { property: "", price: 0 }, // Take first size or default
+      };
+      addProduct(wishlistProduct);
+      if (user?.id) {
+        addToWishlistAPI();
+      }
+      toast.success("Added to wishlist");
+    }
   };
 
   useEffect(() => {
@@ -166,55 +249,50 @@ const ProductDetailPage = () => {
           <div className="container">
             <div className="row">
               <div className="col-md-6">
-                <div className="tf-product-media-wrap sticky-top">
-                  <div className="thumbs-slider">
-                    <div
-                      dir="ltr"
-                      className="swiper tf-product-media-thumbs other-image-zoom"
-                      data-direction="vertical"
-                    ></div>
-                    <div
-                      dir="ltr"
-                      className="swiper tf-product-media-main"
-                      id="gallery-swiper-started"
-                    >
-                      <div className="swiper-wrapper">
-                        <div className="swiper-slide" data-color="grey">
-                          <a
-                            target="_blank"
-                            className="item"
-                            data-pswp-width="600px"
-                            data-pswp-height="800px"
-                          >
-                            <img
-                              className="tf-image-zoom lazyload"
-                              data-zoom={
-                                productData?.image &&
-                                productData?.image.length > 0 &&
-                                productData.image[0]
-                                  ? productData.image[0]
-                                  : "/images/Product.jpg"
-                              }
-                              data-src={
-                                productData?.image &&
-                                productData?.image.length > 0 &&
-                                productData.image[0]
-                                  ? productData.image[0]
-                                  : "/images/Product.jpg"
-                              }
-                              src={
-                                productData?.image &&
-                                productData?.image.length > 0 &&
-                                productData.image[0]
-                                  ? productData.image[0]
-                                  : "/images/Product.jpg"
-                              }
-                              alt=""
-                            />
-                          </a>
-                        </div>
-                      </div>
-                    </div>
+                <div className="slider-scroll">
+                  <div
+                    className="d-grid grid-template-columns-2 wrapper-gallery-scroll gap-20"
+                    id="gallery-started"
+                  >
+                    {productData?.image && productData.image.length > 0 ? (
+                      productData?.image.map((value, index) => (
+                        <a
+                          key={`${value}-a-images-details-${index}`}
+                          href={value}
+                          target="_blank"
+                          className="item item-scroll-target"
+                          data-scroll="gray"
+                          data-pswp-width="600px"
+                          data-pswp-height="800px"
+                        >
+                          <img
+                            key={`${value}-images-details-${index}`}
+                            className="tf-image-zoom lazyload radius-12 w-100"
+                            data-zoom={value}
+                            data-src={value}
+                            src={value}
+                            alt=""
+                          />
+                        </a>
+                      ))
+                    ) : (
+                      <a
+                        href="/images/Product.jpg"
+                        target="_blank"
+                        className="item item-scroll-target"
+                        data-scroll="gray"
+                        data-pswp-width="600px"
+                        data-pswp-height="800px"
+                      >
+                        <img
+                          className="tf-image-zoom lazyload radius-12 w-100"
+                          data-zoom="/images/Product.jpg"
+                          data-src="/images/Product.jpg"
+                          src="/images/Product.jpg"
+                          alt=""
+                        />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>
@@ -267,7 +345,7 @@ const ProductDetailPage = () => {
                                 key={`input-values-${each.property}`}
                               />
                               <label
-                                className={`style-text size-btn ${each.property === productProperty?.property && "bg-black text-white"}`}
+                                className={`style-textz size-btn ${each.property === productProperty?.property && "bg-black text-white"}`}
                                 htmlFor={`values-${each.property}`}
                                 data-value={each.property}
                                 data-price={each.price}
@@ -326,6 +404,26 @@ const ProductDetailPage = () => {
                           </span>
                         </div>
                       </div>
+                      <div>
+                        <div className="tf-product-info-by-btn mb_10">
+                          <a
+                            onClick={() => navigate(PATHS.CART)}
+                            data-bs-toggle="modal"
+                            className="btn-style-2 text-btn-uppercase fw-6 btn-add-to-cart flex-grow-1"
+                          >
+                            <span> Buy it now</span>
+                          </a>
+                          <a
+                            onClick={handleWhishlist}
+                            className={`box-icon hover-tooltip text-caption-2 wishlist btn-icon-action ${isInWishlist && "whislist-active"}`}
+                          >
+                            <span className="icon icon-heart"></span>
+                            <span className="tooltip text-caption-2">
+                              {isInWishlist ? "Remove" : "Add"} Wishlist
+                            </span>
+                          </a>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -371,200 +469,9 @@ const ProductDetailPage = () => {
                   data-pagination-md="1"
                   data-pagination-lg="1"
                 >
-                  <div className="swiper-wrapper">
+                  <div className="tf-grid-layout tf-col-2 lg-col-3 xl-col-4">
                     {products.map((product, index) => (
-                      <div
-                        className="swiper-slide"
-                        key={`${index}-product-details-div`}
-                      >
-                        <div
-                          className="card-product"
-                          key={`${index}-product-details-div2`}
-                        >
-                          <div
-                            className="card-product-wrapper"
-                            key={`${index}-product-details-div3`}
-                          >
-                            <a
-                              onClick={() =>
-                                navigate(
-                                  PATHS.PRODUCTDETAIL.replace(
-                                    ":id",
-                                    String(product.id),
-                                  ),
-                                )
-                              }
-                              className="product-img"
-                              key={`${index}-product-details-a`}
-                            >
-                              <img
-                                className="lazyload img-product"
-                                data-src={
-                                  product?.image &&
-                                  product?.image.length > 0 &&
-                                  product.image[0]
-                                    ? product.image[0]
-                                    : "/images/Product.jpg"
-                                }
-                                src={
-                                  product?.image &&
-                                  product?.image.length > 0 &&
-                                  product.image[0]
-                                    ? product.image[0]
-                                    : "/images/Product.jpg"
-                                }
-                                alt="image-product"
-                                key={`${index}-product-details-img`}
-                              />
-                              <img
-                                className="lazyload img-hover"
-                                data-src={
-                                  product?.image &&
-                                  product?.image.length > 0 &&
-                                  product.image[0]
-                                    ? product.image[0]
-                                    : "/images/Product.jpg"
-                                }
-                                src={
-                                  product?.image &&
-                                  product?.image.length > 0 &&
-                                  product.image[0]
-                                    ? product.image[0]
-                                    : "/images/Product.jpg"
-                                }
-                                alt="image-product"
-                                key={`${index}-product-details-img2`}
-                              />
-                            </a>
-                            {product?.sale && (
-                              <div
-                                className="on-sale-wrap"
-                                key={`${index}-product-details-div4`}
-                              >
-                                <span
-                                  className="on-sale-item"
-                                  key={`${index}-product-details-span22`}
-                                >
-                                  -{product?.sale}%
-                                </span>
-                              </div>
-                            )}
-                            {product?.hotSale && (
-                              <div className="marquee-product bg-main">
-                                <div className="marquee-wrapper">
-                                  <div className="initial-child-container">
-                                    {Array.from({ length: 5 }).map(
-                                      (_, index) => (
-                                        <>
-                                          <div
-                                            className="marquee-child-item"
-                                            key={`${index}-hotsale`}
-                                          >
-                                            <p
-                                              className="font-2 text-btn-uppercase fw-6 text-white"
-                                              key={`${index}-hotsale- p`}
-                                            >
-                                              Hot Sale {product.sale}% OFF
-                                            </p>
-                                          </div>
-                                          <div
-                                            className="marquee-child-item"
-                                            key={`${index}-hotsale-dev`}
-                                          >
-                                            <span
-                                              className="icon icon-lightning text-critical"
-                                              key={`${index}-hotsale-span`}
-                                            ></span>
-                                          </div>
-                                        </>
-                                      ),
-                                    )}
-                                  </div>
-                                </div>
-                                {product.sale > 0 && (
-                                  <div className="marquee-wrapper">
-                                    <div className="initial-child-container">
-                                      {Array.from({ length: 5 }).map(
-                                        (_, index) => (
-                                          <>
-                                            <div
-                                              className="marquee-child-item"
-                                              key={`${index}-hotsale2`}
-                                            >
-                                              <p
-                                                className="font-2 text-btn-uppercase fw-6 text-white"
-                                                key={`${index}-hotsale2-p`}
-                                              >
-                                                Hot Sale {product.sale}% OFF
-                                              </p>
-                                            </div>
-                                            <div
-                                              className="marquee-child-item"
-                                              key={`${index}-hotsale2-div`}
-                                            >
-                                              <span
-                                                className="icon icon-lightning text-critical"
-                                                key={`${index}-hotsale2-span`}
-                                              ></span>
-                                            </div>
-                                          </>
-                                        ),
-                                      )}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
-                            )}
-                            <div className="list-product-btn">
-                              <a
-                                href="javascript:void(0);"
-                                className="box-icon wishlist btn-icon-action"
-                              >
-                                <span className="icon icon-heart"></span>
-                                <span className="tooltip">Wishlist</span>
-                              </a>
-                            </div>
-                            <div className="list-btn-main">
-                              <a
-                                href="#shoppingCart"
-                                data-bs-toggle="modal"
-                                className="btn-main-product"
-                              >
-                                Add To cart
-                              </a>
-                            </div>
-                          </div>
-                          <div className="card-product-info">
-                            <a
-                              onClick={() =>
-                                navigate(
-                                  PATHS.PRODUCTDETAIL.replace(
-                                    ":id",
-                                    String(product.id),
-                                  ),
-                                )
-                              }
-                              className="title link"
-                            >
-                              {product.name}
-                            </a>
-                            <span className="price">
-                              {product.price !== product.netPrice && (
-                                <span className="old-price">
-                                  {currency?.symbol ?? "$"}
-                                  {(
-                                    product.price * (currency?.rate ?? 1)
-                                  ).toFixed(2)}
-                                </span>
-                              )}
-                              {currency?.symbol ?? "$"}
-                              {(
-                                product.netPrice * (currency?.rate ?? 1)
-                              ).toFixed(2)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                      <ProductCardBestSeller product={product} index={index} />
                     ))}
                   </div>
                   <div className="sw-pagination-latest sw-dots type-circle justify-content-center"></div>

@@ -42,7 +42,7 @@ const Header = () => {
             <div className="col-xl-3 col-md-4 col-6">
               <a onClick={() => navigate(PATHS.HOME)} className="logo-header">
                 <img
-                  src="images/FloriPerfumeLogo.svg"
+                  src="/images/FloriPerfumeLogo.svg"
                   alt="logo"
                   className="logo"
                 />

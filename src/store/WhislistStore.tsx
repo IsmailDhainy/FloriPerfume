@@ -12,7 +12,7 @@ export interface Product {
   id: number; // Unique cart item ID (product.id + size property)
   productId?: number; // Original product ID
   name: string;
-  image: string;
+  image: string[];
   sale: number;
   price: number;
   netPrice: number;

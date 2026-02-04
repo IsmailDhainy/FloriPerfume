@@ -9561,6 +9561,15 @@ input.style-line-bottom::placeholder {
   border-radius: 50%;
   padding: 7px 15px;
 }
+.variant-picker-item .variant-picker-values label.style-textz {
+  width: 120px;
+  height: 48px;
+  border: 2px solid var(--line);
+  padding: 7px 15px;
+}
+.variant-picker-item .variant-picker-values label.style-textz:hover {
+  border-color: var(--main);
+}
 .variant-picker-item .variant-picker-values label.style-text:hover {
   border-color: var(--main);
 }

@@ -17,9 +17,9 @@ const Footer = () => {
             <div className="flex flex-row justify-around">
               <div className="">
                 <div className="footer-infor">
-                  <div className="footer-logo">
+                  <div className="footer-logo w-[100px]">
                     <a onClick={() => navigate(PATHS.HOME)}>
-                      <img src="images/FloriPerfumeLogo.svg" alt="" />
+                      <img src="/images/FloriPerfumeLogo.svg" alt="" />
                     </a>
                   </div>
                   <ul className="tf-social-icon">
