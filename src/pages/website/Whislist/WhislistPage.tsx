@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 
-import ProductCardWhislist from "$/components/shared/ProductCardWhislist";
+import CheckoutModal from "$/components/shared/CheckoutModal";
+import ProductCardGrid from "$/components/shared/ProductCardGrid";
 import useSettings from "$/hooks/contexts/useSettings";
 import PATHS from "$/routes/constants";
 import { useWhishlistStore } from "$/store/WhislistStore";
@@ -45,11 +46,12 @@ const WhislistPage = () => {
         <div className="container">
           <div className="tf-grid-layout tf-col-2 md-col-3 xl-col-4">
             {items.map((item, index) => (
-              <ProductCardWhislist product={item} index={index} />
+              <ProductCardGrid product={item} index={index} />
             ))}
           </div>
         </div>
       </section>
+      <CheckoutModal />
     </div>
   );
 };

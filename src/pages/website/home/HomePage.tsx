@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+import CheckoutModal from "$/components/shared/CheckoutModal";
+
 import Banner from "./components/Banner";
 import Carousel from "./components/Carousel";
 import CategoriesSlider from "./components/CategoriesSlider";
@@ -9,8 +11,14 @@ import ProductsDynamic from "./components/ProductsDynamic";
 
 const HomePage: React.FC = () => {
   useEffect(() => {
+    const existingScript = document.querySelector('script[src="/js/main.js"]');
+
+    if (existingScript) {
+      return; // Script already loaded
+    }
+
     const script = document.createElement("script");
-    script.src = "../../../../public/js/main.js";
+    script.src = "/js/main.js";
 
     script.async = false;
 
@@ -29,6 +37,7 @@ const HomePage: React.FC = () => {
       <Banner />
       <Features />
       <ProductsDynamic />
+      <CheckoutModal />
     </div>
   );
 };

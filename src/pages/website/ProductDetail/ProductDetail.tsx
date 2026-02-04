@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 
 import { getAllProductsByType, getOne } from "$/api/products/product.api";
 import { createWhislist, remove } from "$/api/whishlist/whishlist.api";
+import CheckoutModal from "$/components/shared/CheckoutModal";
 import Loader from "$/components/shared/Loader";
 import ProductCardBestSeller from "$/components/shared/ProductCardBestSeller";
 import useAuth from "$/hooks/contexts/useAuth";
@@ -481,6 +482,7 @@ const ProductDetailPage = () => {
           </div>
         </section>
       )}
+      <CheckoutModal />
     </div>
   );
 };

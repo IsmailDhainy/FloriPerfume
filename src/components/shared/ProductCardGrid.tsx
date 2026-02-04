@@ -89,7 +89,7 @@ const ProductCardGrid = ({ product, index }) => {
     <div
       className="card-product grid"
       data-brand={product.brand?.name || ""}
-      data-category={product.category.name}
+      data-category={product.category && product.category.name}
       key={`${index}-${product.id}-grid-div`}
     >
       <div
@@ -267,11 +267,13 @@ const ProductCardGrid = ({ product, index }) => {
           </span>
         </div>
         <div className="price" key={`product-div22-${index}-${product.id}`}>
-          <span className="text-secondary-2">
-            {" "}
-            {product.category.name}
-            {" - "}
-          </span>
+          {product.category && (
+            <span className="text-secondary-2">
+              {" "}
+              {product.category.name}
+              {" - "}
+            </span>
+          )}
 
           <span className="text-secondary-2">{product.brand?.name || ""}</span>
         </div>

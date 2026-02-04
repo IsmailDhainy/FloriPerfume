@@ -15,15 +15,28 @@ const CategoriesSlider = () => {
   });
 
   useEffect(() => {
+    const existingScript = document.querySelector(
+      'script[src="/js/carousel.js"]',
+    );
+
+    if (existingScript) {
+      return; // Script already loaded
+    }
+
     const script = document.createElement("script");
-    script.src = "../../../../public/js/carousel.js";
+    script.src = "/js/carousel.js";
 
     script.async = false;
 
     document.body.appendChild(script);
 
     return () => {
-      document.body.removeChild(script);
+      const scriptToRemove = document.querySelector(
+        'script[src="/js/carousel.js"]',
+      );
+      if (scriptToRemove && scriptToRemove.parentNode) {
+        scriptToRemove.parentNode.removeChild(scriptToRemove);
+      }
     };
   }, []);
 
