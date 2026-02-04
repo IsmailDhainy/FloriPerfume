@@ -11,12 +11,6 @@ import ProductsDynamic from "./components/ProductsDynamic";
 
 const HomePage: React.FC = () => {
   useEffect(() => {
-    const existingScript = document.querySelector('script[src="/js/main.js"]');
-
-    if (existingScript) {
-      return; // Script already loaded
-    }
-
     const script = document.createElement("script");
     script.src = "/js/main.js";
 

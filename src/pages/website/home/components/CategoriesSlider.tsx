@@ -15,14 +15,6 @@ const CategoriesSlider = () => {
   });
 
   useEffect(() => {
-    const existingScript = document.querySelector(
-      'script[src="/js/carousel.js"]',
-    );
-
-    if (existingScript) {
-      return; // Script already loaded
-    }
-
     const script = document.createElement("script");
     script.src = "/js/carousel.js";
 
