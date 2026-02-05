@@ -199,16 +199,18 @@ const CartPage = () => {
                               className="flex-1 text-[20px]"
                               key={`${index}-cart-page-div-div33`}
                             >
-                              <span className="old-price-cart">
-                                {currency?.symbol ?? "$"}
-                                {eachSize &&
-                                  eachSize?.quantity &&
-                                  (
-                                    eachSize.price *
-                                    eachSize.quantity *
-                                    (currency?.rate ?? 1)
-                                  ).toFixed(2)}
-                              </span>
+                              {each.sale ? (
+                                <span className="old-price-cart">
+                                  {currency?.symbol ?? "$"}
+                                  {eachSize &&
+                                    eachSize?.quantity &&
+                                    (
+                                      eachSize.price *
+                                      eachSize.quantity *
+                                      (currency?.rate ?? 1)
+                                    ).toFixed(2)}
+                                </span>
+                              ) : null}
                               {currency?.symbol ?? "$"}
                               {each.sale
                                 ? eachSize &&
@@ -362,16 +364,18 @@ const CartPage = () => {
                               className="flex-1 text-[20px]"
                               key={`${index}-cart2-page-div-div33`}
                             >
-                              <span className="old-price-cart">
-                                {currency?.symbol ?? "$"}
-                                {eachSize &&
-                                  eachSize?.quantity &&
-                                  (
-                                    eachSize.price *
-                                    eachSize.quantity *
-                                    (currency?.rate ?? 1)
-                                  ).toFixed(2)}
-                              </span>
+                              {each.sale ? (
+                                <span className="old-price-cart">
+                                  {currency?.symbol ?? "$"}
+                                  {eachSize &&
+                                    eachSize?.quantity &&
+                                    (
+                                      eachSize.price *
+                                      eachSize.quantity *
+                                      (currency?.rate ?? 1)
+                                    ).toFixed(2)}
+                                </span>
+                              ) : null}
                               {currency?.symbol ?? "$"}
                               {each.sale
                                 ? eachSize &&

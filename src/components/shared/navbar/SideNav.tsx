@@ -55,7 +55,7 @@ function SideNav({ children }: PropsWithChildren) {
       {isTabletAndBelow && (
         <div className="col-start-2 col-end-3 flex items-center justify-center p-4">
           <img
-            src="/images/logos/Group.png"
+            src="/images/FloriPerfumeLogo.svg"
             alt="logo"
             className="mobile:w-1/2 mobile:min-w-[162px] w-[30%]"
           />
@@ -72,7 +72,7 @@ function SideNav({ children }: PropsWithChildren) {
       >
         <div className="flex flex-col items-center">
           <img
-            src="/images/logos/Group.png"
+            src="/images/FloriPerfumeLogo.svg"
             alt="logo"
             className={cn("w-[40%]", isTabletAndBelow && "w-1/2")}
           />

@@ -72,7 +72,7 @@ const CheckoutModal = () => {
                           </div>
                           <div className="tf-mini-cart-info flex-grow-1">
                             <div className="mb_12 d-flex align-items-center justify-content-between flex-wrap gap-12">
-                              <div className="text-title">
+                              <div className="text-title w-[60%] sm:w-[100%] md:w-[100%] lg:w-[100%] xl:w-[100%]">
                                 <a
                                   className="link text-line-clamp-1"
                                   onClick={() =>
@@ -114,14 +114,14 @@ const CheckoutModal = () => {
                                   >
                                     {sizeItem.quantity} X{" "}
                                     {currency?.symbol ?? "$"}
-                                    {each.sale
+                                    {each.sale > 0
                                       ? (
                                           (sizeItem.price -
                                             (sizeItem.price * each.sale) /
                                               100) *
                                           (currency?.rate ?? 1)
                                         ).toFixed(2)
-                                      : each.sale}
+                                      : sizeItem.price}
                                   </div>
                                 </div>
                               ))}
