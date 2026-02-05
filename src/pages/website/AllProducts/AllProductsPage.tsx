@@ -8,7 +8,6 @@ import {
   getAllProductsByType,
   getHighestPrice,
 } from "$/api/products/product.api";
-import CheckoutModal from "$/components/shared/CheckoutModal";
 import Loader from "$/components/shared/Loader";
 import ProductCardGrid from "$/components/shared/ProductCardGrid";
 import ProductCardWithDetails from "$/components/shared/ProductCardWithDetails";
@@ -424,9 +423,6 @@ const AllProductsPage = () => {
           </div>
         </section>
       </div>
-
-      <CheckoutModal />
-
       {/* FILTERING */}
       <div className="offcanvas offcanvas-start canvas-filter" id="filterShop">
         <div className="canvas-wrapper">

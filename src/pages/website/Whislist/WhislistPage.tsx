@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 
-import CheckoutModal from "$/components/shared/CheckoutModal";
 import ProductCardGrid from "$/components/shared/ProductCardGrid";
 import useSettings from "$/hooks/contexts/useSettings";
 import PATHS from "$/routes/constants";
@@ -51,7 +50,6 @@ const WhislistPage = () => {
           </div>
         </div>
       </section>
-      <CheckoutModal />
     </div>
   );
 };

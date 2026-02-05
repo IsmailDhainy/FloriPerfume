@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 
-import CheckoutModal from "$/components/shared/CheckoutModal";
-
 import Banner from "./components/Banner";
 import Carousel from "./components/Carousel";
 import CategoriesSlider from "./components/CategoriesSlider";
@@ -31,7 +29,6 @@ const HomePage: React.FC = () => {
       <Banner />
       <Features />
       <ProductsDynamic />
-      <CheckoutModal />
     </div>
   );
 };

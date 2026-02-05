@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
+import CheckoutModal from "$/components/shared/CheckoutModal";
 import Footer from "$/components/shared/Footer";
 import Header from "$/components/shared/Header";
 
@@ -45,6 +46,7 @@ export default function DesignedWebsiteLayout() {
       <Header />
       <Outlet />
       <Footer />
+      <CheckoutModal />
     </div>
   );
 }
